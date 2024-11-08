@@ -1,5 +1,4 @@
 <?php
-header('Content-Type: text/html; charset=utf-8');
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Student;
@@ -28,14 +27,33 @@ function displayStudentResult($studentId, $schoolBoard) {
 $csmBoard = new CSM();
 $csmbBoard = new CSMB();
 
-// Display results for each student in the database
-echo "<h2>School Board Results</h2>";
-
-// Assuming we want to display results for students 1-10 as examples:
-for ($id = 1; $id <= 10; $id++) {
-    if ($id % 2 == 0) {
-        displayStudentResult($id, $csmbBoard); // CSMB for even IDs
+// Check if the student ID is provided in the query string
+if (isset($_GET['student']) && is_numeric($_GET['student'])) {
+    $studentId = (int)$_GET['student']; // Get the student ID from the query string
+    
+    // Display results for the specific student
+    echo "<h2>Results for Student ID: $studentId</h2>";
+    
+    // Determine which board to use based on the ID (odd or even)
+    if ($studentId % 2 == 0) {
+        displayStudentResult($studentId, $csmbBoard);  // Even IDs for CSMB
     } else {
-        displayStudentResult($id, $csmBoard);  // CSM for odd IDs
+        displayStudentResult($studentId, $csmBoard);   // Odd IDs for CSM
+    }
+} else {
+    // If no student ID is provided, display results for all students grouped by board
+
+    echo "<h2>CSM Board Results</h2>";
+    for ($id = 1; $id <= 10; $id++) {
+        if ($id % 2 != 0) { // Odd IDs for CSM
+            displayStudentResult($id, $csmBoard);
+        }
+    }
+
+    echo "<h2>CSMB Board Results</h2>";
+    for ($id = 1; $id <= 10; $id++) {
+        if ($id % 2 == 0) { // Even IDs for CSMB
+            displayStudentResult($id, $csmbBoard);
+        }
     }
 }
