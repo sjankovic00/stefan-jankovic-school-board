@@ -5,36 +5,55 @@ use App\Student;
 use App\CSM;
 use App\CSMB;
 
-// Pomoćna funkcija za prikaz rezultata učenika
-function prikaziRezultatUcenika($studentId, $skolskiOdbor) {
+// Helper function to display a student's result
+function displayStudentResult($studentId, $schoolBoard) {
     $student = Student::loadFromDatabase($studentId);
 
     if (!$student) {
-        echo "<p>Učenik sa ID-jem $studentId nije pronađen.</p>";
+        echo "<p>Student with ID $studentId not found.</p>";
         return;
     }
 
-    $rezultat = $skolskiOdbor->getFormattedResult($student);
-    $format = $skolskiOdbor instanceof CSM ? 'JSON' : 'XML';
+    $result = $schoolBoard->getFormattedResult($student);
+    $format = $schoolBoard instanceof CSM ? 'JSON' : 'XML';
 
-    echo "<h3>Rezultat za {$student->name} (ID: {$student->id}) - Format: $format</h3>";
+    echo "<h3>Result for {$student->name} (ID: {$student->id}) - Format: $format</h3>";
     echo "<pre>";
-    echo htmlspecialchars($rezultat);
+    echo htmlspecialchars($result);
     echo "</pre>";
 }
 
-// Inicijalizacija školskih odbora
-$csmOdbor = new CSM();
-$csmbOdbor = new CSMB();
+// Initialize the school boards
+$csmBoard = new CSM();
+$csmbBoard = new CSMB();
 
-// Prikaz rezultata za svakog učenika iz baze podataka
-echo "<h2>Rezultati školskog odbora</h2>";
-
-// Prikazujemo rezultate za učenike sa ID-jem od 1 do 10 kao primer:
-for ($id = 1; $id <= 10; $id++) {
-    if ($id % 2 == 0) {
-        prikaziRezultatUcenika($id, $csmbOdbor); // CSMB za parne ID-jeve
+// Check if the student ID is provided in the query string
+if (isset($_GET['student']) && is_numeric($_GET['student'])) {
+    $studentId = (int)$_GET['student']; // Get the student ID from the query string
+    
+    // Display results for the specific student
+    echo "<h2>Results for Student ID: $studentId</h2>";
+    
+    // Determine which board to use based on the ID (odd or even)
+    if ($studentId % 2 == 0) {
+        displayStudentResult($studentId, $csmbBoard);  // Even IDs for CSMB
     } else {
-        prikaziRezultatUcenika($id, $csmOdbor);  // CSM za neparne ID-jeve
+        displayStudentResult($studentId, $csmBoard);   // Odd IDs for CSM
+    }
+} else {
+    // If no student ID is provided, display results for all students grouped by board
+
+    echo "<h2>CSM Board Results</h2>";
+    for ($id = 1; $id <= 10; $id++) {
+        if ($id % 2 != 0) { // Odd IDs for CSM
+            displayStudentResult($id, $csmBoard);
+        }
+    }
+
+    echo "<h2>CSMB Board Results</h2>";
+    for ($id = 1; $id <= 10; $id++) {
+        if ($id % 2 == 0) { // Even IDs for CSMB
+            displayStudentResult($id, $csmbBoard);
+        }
     }
 }

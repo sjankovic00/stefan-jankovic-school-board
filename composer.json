@@ -4,7 +4,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Sjank\\Quantox\\": "src/"
+          "App\\": "src/"
         }
     },
     "authors": [
