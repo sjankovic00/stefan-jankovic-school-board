@@ -1,0 +1,17 @@
+{
+    "name": "sjank/quantox",
+    "description": "Quantox school_board test",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Sjank\\Quantox\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Stefan Jankovic",
+            "email": "stefancecijankovic@gmail.com"
+        }
+    ],
+    "require": {}
+}
