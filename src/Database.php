@@ -15,8 +15,8 @@ class Database {
         $password = 'test1234';      // Update with your MySQL password
 
         try {
-            $this->connection = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->connection = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+            $this->connection->setAttribute(\PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             die("Database connection failed: " . $e->getMessage());
         }
